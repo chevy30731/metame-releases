@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MetaMe Downloads</title>
+<meta name="description" content="Download MetaMe, the private identity wallet for Windows, macOS and Linux.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an instrument panel. Thesis left, this computer's installer right;
+   below it the installer ledger with checksums, the one rule, and an honest
+   works-now / not-yet ledger. Sovereign identity, single dark theme by choice. */
+:root {
+  color-scheme: dark;
+  --bg: #131209;
+  --surface: #1d1b13;
+  --surface-2: #242117;
+  --line: #403a2c;
+  --line-soft: #2e2a1f;
+  --text: #f4efe3;
+  --muted: #b6ae99;
+  --faint: #8f8875;
+  --brass: #e3a74f;
+  --brass-hi: #efbe72;
+  --brass-deep: #bd823a;
+  --sage: #7cbca6;
+  --clay: #e36b4f;
+  --on-brass: #17120a;
+  --shadow: rgba(0, 0, 0, .6);
+  --f-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --f-ui: "Hanken Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--bg); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--f-ui);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 24px; }
+@media (max-width: 480px) { .wrap { padding-inline: 16px; } }
+a { color: var(--brass); text-underline-offset: 3px; }
+a:hover { color: var(--brass-hi); }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 4px; }
+code {
+  font-family: var(--f-mono);
+  font-size: .84em;
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  padding: .08em .4em;
+  word-break: break-all;
+}
+
+/* Header */
+.top {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px 16px;
+  padding-block: 20px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text); text-decoration: none;
+  font-family: var(--f-display); font-size: 22px; font-weight: 600; letter-spacing: -.01em;
+}
+.brand:hover { color: var(--text); }
+.seal { width: 30px; height: 30px; flex: none; }
+.seal path {
+  fill: none; stroke: var(--brass); stroke-width: 2.6; stroke-linejoin: round;
+  stroke-dasharray: 170; stroke-dashoffset: 0;
+  animation: draw 1.4s cubic-bezier(.6, 0, .2, 1) both;
+}
+.seal text { fill: var(--brass); font-family: var(--f-display); font-weight: 600; font-size: 27px; }
+@keyframes draw { from { stroke-dashoffset: 170; } to { stroke-dashoffset: 0; } }
+.top-meta { display: flex; align-items: center; gap: 16px; font-size: 14px; color: var(--muted); }
+.ver {
+  font-family: var(--f-mono); font-size: 12.5px; color: var(--text);
+  border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px;
+}
+
+/* Hero */
+.hero {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 56px; align-items: center;
+  padding-block: 72px 48px;
+}
+.eyebrow {
+  font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--brass); margin: 0 0 18px;
+}
+h1 {
+  font-family: var(--f-display); font-weight: 500;
+  font-size: clamp(38px, 5.6vw, 64px); line-height: 1.04; letter-spacing: -.02em;
+  margin: 0 0 22px; text-wrap: balance;
+  font-variation-settings: "opsz" 144;
+}
+h1 em { font-style: italic; font-weight: 400; color: var(--brass); }
+.lead { font-size: 18px; color: var(--muted); max-width: 34em; margin: 0; }
+.facts {
+  display: flex; flex-wrap: wrap; gap: 8px 22px;
+  list-style: none; margin: 28px 0 0; padding: 0; font-size: 14.5px;
+}
+.facts li { display: flex; align-items: center; gap: 8px; }
+.facts li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
+
+/* Download panel */
+.panel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  padding: 24px; box-shadow: 0 28px 56px -28px var(--shadow);
+  min-width: 0;
+}
+.tabs {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px;
+  background: var(--bg); border: 1px solid var(--line-soft); border-radius: 10px;
+  padding: 4px; margin-bottom: 22px;
+}
+.tab {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  color: var(--muted); font: 600 14px var(--f-ui);
+  padding: 8px 6px; border-radius: 7px;
+}
+.tab:hover { color: var(--text); }
+.tab[aria-pressed="true"] { background: var(--surface-2); color: var(--text); box-shadow: 0 0 0 1px var(--line); }
+.panel-label { font-size: 13.5px; color: var(--muted); margin: 0 0 10px; }
+.dl {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+  background: var(--brass); color: var(--on-brass); text-decoration: none;
+  border-radius: 10px; padding: 16px 18px;
+  transition: background .15s ease, transform .15s ease;
+}
+.dl:hover { background: var(--brass-hi); color: var(--on-brass); }
+.dl:active { transform: translateY(1px); }
+.dl-main { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+.dl-sub { font-family: var(--f-mono); font-size: 12.5px; opacity: .78; word-break: break-all; }
+.req { font-size: 14px; color: var(--muted); margin: 14px 0 0; }
+.alt { font-size: 14px; margin: 4px 0 0; }
+.mobile-note {
+  font-size: 14px; color: var(--text); margin: 0 0 16px;
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: var(--bg);
+}
+
+/* Early-access notice */
+.notice {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 20px; align-items: baseline;
+  border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; background: var(--surface);
+}
+.notice-tag { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--clay); white-space: nowrap; }
+.notice p { margin: 0; color: var(--muted); font-size: 15px; }
+@media (max-width: 560px) { .notice { grid-template-columns: 1fr; } }
+
+/* Sections */
+.section { margin-top: 88px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 28px; }
+h2 {
+  font-family: var(--f-display); font-weight: 500;
+  font-size: clamp(28px, 3.4vw, 38px); line-height: 1.1; letter-spacing: -.015em;
+  margin: 0; text-wrap: balance;
+}
+.sec-note { color: var(--muted); font-size: 14px; margin: 0; }
+
+/* Platform cards */
+.platforms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+@media (max-width: 960px) { .platforms { grid-template-columns: minmax(0, 1fr); } }
+.pcard {
+  background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px;
+  padding: 22px; display: flex; flex-direction: column; gap: 20px; min-width: 0;
+  scroll-margin-top: 24px;
+}
+.pcard.is-yours { border-color: var(--brass-deep); }
+.pcard-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.pcard h3 { font-family: var(--f-display); font-weight: 600; font-size: 23px; margin: 0; }
+.chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--on-brass); background: var(--brass); border-radius: 999px; padding: 3px 9px; white-space: nowrap;
+}
+.preq { font-size: 13.5px; color: var(--muted); margin: -14px 0 0; }
+.files { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.file {
+  border: 1px solid var(--line-soft); border-radius: 10px; background: var(--bg);
+  padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0;
+}
+.file-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.file-name { font-weight: 600; font-size: 14.5px; color: var(--text); text-decoration: none; word-break: break-all; }
+.file-name:hover { color: var(--brass); text-decoration: underline; }
+.size { font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.file-kind { font-size: 13px; color: var(--muted); }
+.hash { display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; }
+.hash-val { font-family: var(--f-mono); font-size: 11.5px; line-height: 1.55; color: var(--faint); word-break: break-all; flex: 1; min-width: 0; }
+.hash-val b { font-weight: 500; color: var(--muted); }
+.copy {
+  appearance: none; flex: none; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--muted);
+  font: 600 12px var(--f-ui); border-radius: 6px; padding: 3px 9px;
+}
+.copy:hover { color: var(--text); border-color: var(--brass-deep); }
+.copy.done { color: var(--sage); border-color: var(--sage); }
+h4 { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; }
+.steps li::marker { color: var(--brass); font-family: var(--f-mono); font-size: 12.5px; }
+.cmd-note { font-size: 13.5px; color: var(--muted); margin: 0 0 8px; }
+.cmd {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg); border: 1px solid var(--line-soft); border-radius: 8px; padding: 8px 10px;
+}
+.cmd code { background: none; border: 0; padding: 0; flex: 1; min-width: 0; font-size: 12.5px; overflow-x: auto; white-space: nowrap; word-break: normal; }
+
+/* The one rule */
+.rule {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 48px; align-items: start;
+  border-top: 1px solid var(--line-soft); padding-top: 64px;
+}
+.rule h2 { font-size: clamp(32px, 4.4vw, 52px); line-height: 1.05; }
+.rule-body > p { color: var(--muted); margin: 0 0 20px; max-width: 36em; }
+.rule-body > p:last-child { margin: 20px 0 0; }
+.nets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.net { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 16px 18px; }
+.net strong { display: block; font-family: var(--f-display); font-size: 19px; font-weight: 600; margin-bottom: 4px; }
+.net span { font-size: 14.5px; color: var(--muted); }
+@media (max-width: 820px) { .rule { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+@media (max-width: 520px) { .nets { grid-template-columns: minmax(0, 1fr); } }
+
+/* Works now / not yet */
+.ledger { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.ledger > div { border: 1px solid var(--line-soft); border-radius: 14px; background: var(--surface); padding: 22px; }
+.ledger h3 { font-family: var(--f-display); font-size: 21px; font-weight: 600; margin: 0 0 14px; }
+.ledger ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+.ledger li { position: relative; padding-left: 22px; }
+.ledger li::before { content: ""; position: absolute; left: 1px; top: .62em; width: 8px; height: 8px; border-radius: 50%; }
+.works li::before { background: var(--sage); }
+.notyet li::before { border: 1.5px solid var(--muted); }
+@media (max-width: 720px) { .ledger { grid-template-columns: minmax(0, 1fr); } }
+
+/* Footer */
+.foot {
+  margin-top: 96px; border-top: 1px solid var(--line-soft); padding-block: 28px 44px;
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 28px;
+  font-size: 14px; color: var(--muted);
+}
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+
+@media (max-width: 820px) { .hero { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-block: 44px 36px; } }
+@media (prefers-reduced-motion: reduce) {
+  .seal path { animation: none; }
+  .dl { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top" id="top" aria-label="MetaMe home">
+      <svg class="seal" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4 56.25 18v28L32 60 7.75 46V18Z"/><text x="32" y="42" text-anchor="middle">M</text></svg>
+      MetaMe
+    </a>
+    <div class="top-meta">
+      <span class="ver" id="ver">v0.1.10</span>
+      <a id="notes-link" href="https://github.com/chevy30731/metame-releases/releases">Release notes</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Private identity wallet · Desktop</p>
+        <h1>Your identity, kept on <em>your own machine.</em></h1>
+        <p class="lead">MetaMe keeps your identity, credentials and keys in an encrypted vault on your computer. When someone asks for proof, you choose exactly which details to share.</p>
+        <ul class="facts">
+          <li>No account to create</li>
+          <li>No telemetry</li>
+          <li>Your keys never leave your device</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <div class="tabs" aria-label="Choose your system">
+          <button class="tab" type="button" data-os="windows" aria-pressed="true">Windows</button>
+          <button class="tab" type="button" data-os="macos" aria-pressed="false">macOS</button>
+          <button class="tab" type="button" data-os="linux" aria-pressed="false">Linux</button>
+        </div>
+        <p class="mobile-note" id="mobile-note" hidden>MetaMe is a desktop app. Open this page on your computer to install it.</p>
+        <p class="panel-label" id="panel-label">Recommended for this computer</p>
+        <a class="dl" id="dl" href="https://github.com/chevy30731/metame-releases/releases">
+          <span class="dl-main">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg>
+            <span id="dl-title">Download for Windows</span>
+          </span>
+          <span class="dl-sub" id="dl-sub">MetaMe_0.1.10_x64-setup.exe · 6.7 MB</span>
+        </a>
+        <p class="req" id="dl-req">Windows 10 or 11, 64-bit</p>
+        <p class="alt"><a id="dl-alt" href="#card-windows">All Windows formats and checksums</a></p>
+      </div>
+    </div>
+
+    <div class="notice">
+      <span class="notice-tag">Early access</span>
+      <p>MetaMe hasn't had an independent security audit yet, and the installers aren't code-signed. Windows and macOS will warn you the first time you open it. The steps for each system are below.</p>
+    </div>
+
+    <section class="section" id="install" aria-labelledby="install-h">
+      <div class="sec-head">
+        <h2 id="install-h">Install</h2>
+        <p class="sec-note" id="install-note">Version 0.1.10</p>
+      </div>
+      <div class="platforms" id="platforms"></div>
+    </section>
+
+    <section class="section rule" aria-labelledby="rule-h">
+      <div>
+        <p class="eyebrow">Before you start</p>
+        <h2 id="rule-h">There is no password reset.</h2>
+      </div>
+      <div class="rule-body">
+        <p>Nobody holds a copy of your vault, including us. If you forget your master password and have no backup, no one can bring your identity back. Set up a safety net as soon as you install.</p>
+        <div class="nets">
+          <div class="net"><strong>Backup file</strong><span>A sealed copy of your vault. It restores everything on a new device, opened with your password.</span></div>
+          <div class="net"><strong>Recovery shares</strong><span>Your key split into pieces you keep in separate places. They restore your vault even if you forget your password.</span></div>
+        </div>
+        <p>Afterwards, open <strong>Test recovery shares</strong> from Home to check that your shares work. The test changes nothing.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="today-h">
+      <div class="sec-head">
+        <h2 id="today-h">What it does today</h2>
+        <p class="sec-note" id="today-note">As of version 0.1.10</p>
+      </div>
+      <div class="ledger">
+        <div class="works">
+          <h3>Works now</h3>
+          <ul>
+            <li>Create your identity and an encrypted vault on your computer</li>
+            <li>Back up with a file or recovery shares, and test recovery safely</li>
+            <li>Hold credentials and share only the details you choose</li>
+            <li>Keep separate Personal and Work profiles</li>
+            <li>Install signed add-on modules from the registry</li>
+            <li>Join an organization's managed Work profile</li>
+          </ul>
+        </div>
+        <div class="notyet">
+          <h3>Not yet</h3>
+          <ul>
+            <li>An independent security audit</li>
+            <li>Code-signed installers</li>
+            <li>Automatic updates. Download each new version from this page.</li>
+            <li>A phone app</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>MetaMe is early-access software. Its source code isn't public yet.</span>
+    <nav aria-label="More">
+      <a id="issues-link" href="https://github.com/chevy30731/metame-releases/issues/new">Report a problem</a>
+      <a id="all-link" href="https://github.com/chevy30731/metame-releases/releases">All versions</a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+/*RELEASE:BEGIN*/
+const RELEASE = {"version":"0.1.10","tag":"v0.1.10","date":"2026-10-13","repo":"chevy30731/metame-releases","files":[{"os":"linux","file":"MetaMe-0.1.10-1.x86_64.rpm","size":11584835,"sha256":"91bb1ac6ccae4f7f4ae266f17a3a242cd99f5b7091912f6a2f6dcd1f8a696988"},{"os":"linux","file":"MetaMe_0.1.10_amd64.AppImage","size":88844792,"sha256":"c4c3667abfafca7a19a5bc165c8e1f477d221318643cb3c01bfa08e6e9db8dfc"},{"os":"linux","file":"MetaMe_0.1.10_amd64.deb","size":11585966,"sha256":"3c299cc849f6e4989a048f0b30a560205c57a7d5cc5506da44a6cc2386e64aa4"},{"os":"macos","file":"MetaMe_0.1.10_universal.dmg","size":21042820,"sha256":"0c6d95f5679a59ce65abbf402d9812e115b0d3780fd023ba99feae7a0459b018"},{"os":"windows","file":"MetaMe_0.1.10_x64-setup.exe","size":6703072,"sha256":"d107517820a71b467874caecf11b664ffbcaf8f8b492ffd9409510784a8b2f6e"},{"os":"windows","file":"MetaMe_0.1.10_x64_en-US.msi","size":9453568,"sha256":"154b04f1a9659ab3dae772dbb74911b03340bd39d158bbf7b14792b2f3aff6b1"}]};
+/*RELEASE:END*/
+
+(function () {
+  "use strict";
+
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const base = "https://github.com/" + RELEASE.repo;
+  const urlFor = (file) => base + "/releases/download/" + RELEASE.tag + "/" + encodeURIComponent(file);
+  const fmtSize = (bytes) => (bytes / 1e6).toFixed(1) + " MB";
+  const fmtDate = (iso) => new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+  function kindOf(file) {
+    if (/-setup\.exe$/i.test(file)) return { label: "Installer · recommended", primary: true };
+    if (/\.msi$/i.test(file)) return { label: "MSI package · for IT deployment" };
+    if (/\.dmg$/i.test(file)) return { label: "Disk image · Intel and Apple Silicon", primary: true };
+    if (/\.AppImage$/i.test(file)) return { label: "AppImage · runs on most distributions", primary: true };
+    if (/\.deb$/i.test(file)) return { label: "Debian and Ubuntu package" };
+    if (/\.rpm$/i.test(file)) return { label: "Fedora and RHEL package" };
+    return { label: "Download" };
+  }
+  const filesFor = (os) => RELEASE.files.filter((f) => f.os === os);
+  const primaryFor = (os) => filesFor(os).find((f) => kindOf(f.file).primary) || filesFor(os)[0];
+  const named = (re) => { const f = RELEASE.files.find((x) => re.test(x.file)); return f ? esc(f.file) : ""; };
+
+  const OS = {
+    windows: {
+      name: "Windows",
+      req: "Windows 10 or 11, 64-bit",
+      shell: "PowerShell, in the folder you downloaded to",
+      verify: (f) => "Get-FileHash .\\" + f,
+      steps: () => [
+        "Run <code>" + named(/-setup\.exe$/i) + "</code>.",
+        "If you see <em>Windows protected your PC</em>, click <strong>More info</strong>, then <strong>Run anyway</strong>."
+      ]
+    },
+    macos: {
+      name: "macOS",
+      req: "Intel or Apple Silicon",
+      shell: "Terminal, in the folder you downloaded to",
+      verify: (f) => "shasum -a 256 " + f,
+      steps: () => [
+        "Open <code>" + named(/\.dmg$/i) + "</code> and drag MetaMe into Applications.",
+        "Open MetaMe. macOS blocks it the first time, so close the message.",
+        "Go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>. On macOS 14 or earlier, right-click MetaMe and choose <strong>Open</strong> instead.",
+        "If macOS says the app is damaged, run <code>xattr -dr com.apple.quarantine /Applications/MetaMe.app</code> in Terminal and open it again."
+      ]
+    },
+    linux: {
+      name: "Linux",
+      req: "64-bit (x86_64)",
+      shell: "a terminal, in the folder you downloaded to",
+      verify: (f) => "sha256sum " + f,
+      steps: () => [
+        "AppImage: run <code>chmod +x " + named(/\.AppImage$/i) + "</code>, then open it.",
+        "Debian or Ubuntu: <code>sudo apt install ./" + named(/\.deb$/i) + "</code>",
+        "Fedora or RHEL: <code>sudo dnf install ./" + named(/\.rpm$/i) + "</code>"
+      ]
+    }
+  };
+  const ORDER = ["windows", "macos", "linux"];
+
+  function detect() {
+    const ua = navigator.userAgent || "";
+    const plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
+    const both = plat + " " + ua;
+    const mobile = /Android|iPhone|iPad|iPod/i.test(ua) || (/Mac/i.test(plat) && navigator.maxTouchPoints > 1);
+    let os = "windows";
+    if (/Win/i.test(both)) os = "windows";
+    else if (/Mac/i.test(both)) os = "macos";
+    else if (/Linux|X11|CrOS/i.test(both)) os = "linux";
+    return { os: os, mobile: mobile };
+  }
+  const env = detect();
+
+  function fileRow(f) {
+    const k = kindOf(f.file);
+    return '<li class="file">' +
+      '<div class="file-top"><a class="file-name" href="' + esc(urlFor(f.file)) + '">' + esc(f.file) + '</a>' +
+      '<span class="size">' + fmtSize(f.size) + '</span></div>' +
+      '<span class="file-kind">' + esc(k.label) + '</span>' +
+      '<div class="hash"><span class="hash-val"><b>SHA-256</b> ' + esc(f.sha256) + '</span>' +
+      '<button class="copy" type="button" data-copy="' + esc(f.sha256) + '" aria-label="Copy SHA-256 of ' + esc(f.file) + '">Copy</button></div>' +
+      '</li>';
+  }
+
+  function card(os) {
+    const meta = OS[os];
+    const files = filesFor(os);
+    if (!files.length) return "";
+    const cmd = meta.verify(primaryFor(os).file);
+    return '<article class="pcard" id="card-' + os + '">' +
+      '<div class="pcard-head"><h3>' + meta.name + '</h3><span class="chip" hidden>Your system</span></div>' +
+      '<p class="preq">' + esc(meta.req) + '</p>' +
+      '<ul class="files">' + files.map(fileRow).join("") + '</ul>' +
+      '<div><h4>First launch</h4><ol class="steps">' + meta.steps().map((s) => "<li>" + s + "</li>").join("") + '</ol></div>' +
+      '<div><h4>Check the download</h4>' +
+      '<p class="cmd-note">Run this in ' + esc(meta.shell) + ', then compare the result with the SHA-256 above.</p>' +
+      '<div class="cmd"><code>' + esc(cmd) + '</code><button class="copy" type="button" data-copy="' + esc(cmd) + '">Copy</button></div></div>' +
+      '</article>';
+  }
+
+  function select(os) {
+    const meta = OS[os];
+    const f = primaryFor(os);
+    document.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-pressed", String(t.dataset.os === os)));
+    document.getElementById("dl").href = urlFor(f.file);
+    document.getElementById("dl-title").textContent = "Download for " + meta.name;
+    document.getElementById("dl-sub").textContent = f.file + " · " + fmtSize(f.size);
+    document.getElementById("dl-req").textContent = meta.req;
+    const alt = document.getElementById("dl-alt");
+    alt.href = "#card-" + os;
+    alt.textContent = "All " + meta.name + " formats and checksums";
+    document.getElementById("panel-label").textContent =
+      (!env.mobile && os === env.os) ? "Recommended for this computer" : "Installer for " + meta.name;
+  }
+
+  // Fill in release facts
+  const sums = urlFor("SHA256SUMS.txt");
+  document.getElementById("ver").textContent = "v" + RELEASE.version;
+  document.getElementById("notes-link").href = base + "/releases/tag/" + RELEASE.tag;
+  document.getElementById("all-link").href = base + "/releases";
+  document.getElementById("issues-link").href = base + "/issues/new";
+  document.getElementById("today-note").textContent = "As of version " + RELEASE.version;
+  document.getElementById("install-note").innerHTML =
+    "Version " + esc(RELEASE.version) + " · released " + esc(fmtDate(RELEASE.date)) +
+    ' · <a href="' + esc(sums) + '">SHA256SUMS.txt</a>';
+  document.getElementById("platforms").innerHTML = ORDER.map(card).join("");
+
+  if (env.mobile) {
+    document.getElementById("mobile-note").hidden = false;
+  } else {
+    const yours = document.getElementById("card-" + env.os);
+    if (yours) {
+      yours.classList.add("is-yours");
+      yours.querySelector(".chip").hidden = false;
+    }
+  }
+  select(env.os);
+
+  document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => select(t.dataset.os)));
+
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest(".copy");
+    if (!b) return;
+    const text = b.getAttribute("data-copy");
+    const reset = () => { b.textContent = "Copy"; b.classList.remove("done"); };
+    const done = () => { b.textContent = "Copied"; b.classList.add("done"); setTimeout(reset, 1600); };
+    const fallback = () => {
+      const target = b.previousElementSibling;
+      if (target) {
+        const r = document.createRange();
+        r.selectNodeContents(target);
+        const s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+      }
+      b.textContent = "Selected";
+      setTimeout(reset, 2000);
+    };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (err) { fallback(); }
+  });
+})();
+</script>
+
+</html>
